@@ -9,6 +9,9 @@ import com.upgrad.ImageHoster.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.util.Base64;
+import java.util.HashMap;
 
 
 @Controller
@@ -27,6 +31,7 @@ public class UserController {
 
     @Autowired
     private ProfilePhotoService profilePhotoService;
+    private Model model;
 
     /**
      * This controller method renders the user signup view
@@ -58,23 +63,38 @@ public class UserController {
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public String signUpUser(@RequestParam("username") String username,
                              @RequestParam("password") String password,
+                               Model model,
                                HttpSession session) {
-        // We'll first assign a default photo to the user
-        ProfilePhoto photo = new ProfilePhoto();
-        profilePhotoService.save(photo);
 
-        // it is good security practice to store the hash version of the password
-        // in the database. Therefore, if your a hacker gains access to your
-        // database, the hacker cannot see the password for your users
-        String passwordHash = hashPassword(password);
-        User user = new User(username, passwordHash, photo);
-        userService.register(user);
+       // Check if the name username already exists in database. If yes, then don't save in DB & flash error message.
+       User u = userService.getByName(username) ;
+       HashMap<String, String>  err = new HashMap<String, String>() ;
 
-        // We want to create an "currUser" attribute in the HTTP session, and store the user
-        // as the attribute's value to signify that the user has logged in
-        session.setAttribute("currUser", user);
+       if( u == null ) {
+           // We'll first assign a default photo to the user
+           ProfilePhoto photo = new ProfilePhoto();
+           profilePhotoService.save(photo);
 
-        return "redirect:/";
+           // it is good security practice to store the hash version of the password
+           // in the database. Therefore, if your a hacker gains access to your
+           // database, the hacker cannot see the password for your users
+           String passwordHash = hashPassword(password);
+           User user = new User(username, passwordHash, photo);
+           userService.register(user);
+
+           // We want to create an "currUser" attribute in the HTTP session, and store the user
+           // as the attribute's value to signify that the user has logged in
+           session.setAttribute("currUser", user);
+
+           return "redirect:/";
+       }
+       else
+       {
+	   //Displaying error message in case that user is already signup
+           err.put("username", "username has been previously registered");
+           model.addAttribute("errors", err);
+           return "users/signup";
+       }
     }
 
     /**
