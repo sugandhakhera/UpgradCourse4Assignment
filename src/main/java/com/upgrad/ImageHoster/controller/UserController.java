@@ -66,30 +66,42 @@ public class UserController {
        User u = userService.getByName(username) ;
        HashMap<String, String>  err = new HashMap<String, String>() ;
 
-       if( u == null ) {
-           // We'll first assign a default photo to the user
-           ProfilePhoto photo = new ProfilePhoto();
-           profilePhotoService.save(photo);
+       if  (!(password != null && password.length() >= 6))
+       {
+           err.put("password", "password should be greater than 6 charachters");
+       }
 
-           // it is good security practice to store the hash version of the password
-           // in the database. Therefore, if your a hacker gains access to your
-           // database, the hacker cannot see the password for your users
-           String passwordHash = hashPassword(password);
-           User user = new User(username, passwordHash, photo);
-           userService.register(user);
+       if( username != null  &&  username.length() >= 6 ) {
+           if (password != null && password.length() >= 6) {
+               if (u == null) {
+                   // We'll first assign a default photo to the user
+                   ProfilePhoto photo = new ProfilePhoto();
+                   profilePhotoService.save(photo);
 
-           // We want to create an "currUser" attribute in the HTTP session, and store the user
-           // as the attribute's value to signify that the user has logged in
-           session.setAttribute("currUser", user);
+                   // it is good security practice to store the hash version of the password
+                   // in the database. Therefore, if your a hacker gains access to your
+                   // database, the hacker cannot see the password for your users
+                   String passwordHash = hashPassword(password);
+                   User user = new User(username, passwordHash, photo);
+                   userService.register(user);
 
-           return "redirect:/";
+                   // We want to create an "currUser" attribute in the HTTP session, and store the user
+                   // as the attribute's value to signify that the user has logged in
+                   session.setAttribute("currUser", user);
+
+                   return "redirect:/";
+               } else {
+                   err.put("username", "username has been previously registered");
+               }
+           }
        }
        else
        {
-           err.put("username", "username has been previously registered");
-           model.addAttribute("errors", err);
-           return "users/signup";
+           err.put("username", "username should be greater than 6 charachters");
        }
+
+        model.addAttribute("errors", err);
+        return "users/signup";
     }
 
     /**

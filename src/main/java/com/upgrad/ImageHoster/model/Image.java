@@ -1,6 +1,5 @@
 package com.upgrad.ImageHoster.model;
 
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,10 +40,14 @@ public class Image implements Serializable{
     // These  annotations creates a join table for many-to-many relationships
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="Image_Tag",
-        joinColumns = { @JoinColumn(name = "image_id")},
-        inverseJoinColumns = { @JoinColumn(name = "tag_id")})
+            joinColumns = { @JoinColumn(name = "image_id")},
+            inverseJoinColumns = { @JoinColumn(name = "tag_id")})
     private List<Tag> tags = new ArrayList<Tag>();
 
+
+    // Added one to many relationship betweeen image & comments class
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "image")
+    private List<Comment> comments = new ArrayList<Comment>();
 
     public Image() { }
 
@@ -107,6 +110,10 @@ public class Image implements Serializable{
     public List<Tag> getTags() { return tags; }
 
     public void setTags(List<Tag> tags) { this.tags = tags; }
+
+    public List<Comment> getComments() { return comments; }
+
+    public void setComment(List<Comment> comments) { this.comments = comments; }
 
 
 }

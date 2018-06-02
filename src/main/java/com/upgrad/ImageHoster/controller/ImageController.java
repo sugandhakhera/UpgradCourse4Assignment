@@ -118,9 +118,11 @@ public class ImageController {
      * Updated code to include unique identifier.
      */
     @RequestMapping("/images/{id}")
-    public String showImage(@PathVariable int id, Model model) {
+    public String showImage(@PathVariable String id, Model model) {
 
-        Image image = imageService.getByIdWithJoin(id);
+        int id1 =  Integer.parseInt(id) ;
+
+        Image image = imageService.getByIdWithJoin(id1);
         image.setNumView(image.getNumView() + 1);
         imageService.update(image);
 
