@@ -45,7 +45,6 @@ public class ImageController {
     public String listImages(Model model) {
         List<Image> images = imageService.getAll();
         model.addAttribute("images", images);
-
         return "home";
     }
 
@@ -111,14 +110,17 @@ public class ImageController {
 
     /**
      * This controller shows a specific image
-     * @param title the title of the image that we want to retrieve
+
      * @param model used to pass data to the view for rendering
      *
      * @return view for the image that was requested
+     *
+     * Updated code to include unique identifier.
      */
-    @RequestMapping("/images/{title}")
-    public String showImage(@PathVariable String title, Model model) {
-        Image image = imageService.getByTitleWithJoin(title);
+    @RequestMapping("/images/{id}")
+    public String showImage(@PathVariable int id, Model model) {
+
+        Image image = imageService.getByIdWithJoin(id);
         image.setNumView(image.getNumView() + 1);
         imageService.update(image);
 
@@ -128,6 +130,7 @@ public class ImageController {
 
         return "images/image";
     }
+
 
     /**
      * This method deletes a specific image from the database

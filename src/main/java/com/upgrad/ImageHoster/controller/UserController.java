@@ -1,6 +1,5 @@
 package com.upgrad.ImageHoster.controller;
 
-
 import com.google.common.hash.Hashing;
 import com.upgrad.ImageHoster.model.ProfilePhoto;
 import com.upgrad.ImageHoster.model.User;
@@ -9,9 +8,6 @@ import com.upgrad.ImageHoster.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -66,7 +62,7 @@ public class UserController {
                                Model model,
                                HttpSession session) {
 
-       // Check if the name username already exists in database. If yes, then don't save in DB & flash error message.
+        // Check if the name username already exists in database. If yes, then don't save in DB & flash error message.
        User u = userService.getByName(username) ;
        HashMap<String, String>  err = new HashMap<String, String>() ;
 
@@ -90,7 +86,6 @@ public class UserController {
        }
        else
        {
-	   //Displaying error message in case that user is already signup
            err.put("username", "username has been previously registered");
            model.addAttribute("errors", err);
            return "users/signup";

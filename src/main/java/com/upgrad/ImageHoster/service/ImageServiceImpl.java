@@ -29,6 +29,9 @@ public class ImageServiceImpl implements ImageService {
     public Image getByTitleWithJoin(String title) { return imageManager.getImageByTitleWithJoins(title); }
 
     @Override
+    public Image getByIdWithJoin(int id) { return imageManager.getImageByIdWithJoins(id); }
+
+    @Override
     public void deleteByTitle(Image image) {
         imageManager.deleteImage(image.getTitle());
     }

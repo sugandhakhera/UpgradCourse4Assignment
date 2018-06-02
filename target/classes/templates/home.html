@@ -30,7 +30,7 @@
                 <div class="aspect-ratio aspect-ratio--1x1">
                     <img class="db bg-center cover aspect-ratio--object" th:style="'background:url(data:image/jpeg;base64,'+${image.imageFile} + ');'" />
                 </div>
-
+                
                 <!-- Changed the url to contain unique identifier -->
                 <a th:href="'/images/' + ${image.id}" class="ph2 ph0-ns link db">
                     <h3 class="f5 f4-ns mb0 black-90 link hover blue" th:text="${image.id}">Id</h3>
